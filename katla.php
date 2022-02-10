@@ -8,8 +8,6 @@
 //  Script to help solving wordle puzzle 				//
 //======================================================//
 
-require_once "kata5-inc.php";
-
 $MAX = 20;
 $lang = 'id';
 
@@ -28,9 +26,10 @@ parse_str($p,$PARS);
 if ($M = $PARS['max']) $MAX = $M;
 if ($M = $PARS['lang']) $lang = $M;
 
-$K5 = $KATA5[$lang];
+$temp = @file_get_contents("kata-${lang}.json");
+$K5 = json_decode($temp,true);
 if (empty($K5)) {
-	print "Unsupported language id $lang\r\n";
+	print "Unsupported language [$lang]\r\n";
 	exit;
 }
 $LEN = strlen($K5[0]);
