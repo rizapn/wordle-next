@@ -75,6 +75,7 @@ foreach ($ID as $c=>$ar) {
 if ($PARS['debug']==1) {
 	print_r($ID);
 	print_r($POS);
+	print_r($NUM);
 	print "[find=$find]".PHP_EOL;
 	exit;
 }
@@ -93,7 +94,7 @@ foreach ($K5 as $kata) {
 			if ($NX[$c]-->0) $f++;
 		}
 		else if (isset($idc)) {
-			if (sizeof($idc)==1 || 						// char is not allowed at all
+			if ($NUM[$c]<1 || 						// char is not allowed at all
 				$idc[$j]>0) { $f = 0; break; }			// char is not allowed here
 			if ($NX[$c]-->0) $f++;
 		}
