@@ -22,5 +22,5 @@ parameters are separated by &
 
 Example :
 <pre>
-php wordle.php "lang=en&max=100&guess=guest.+-.-"
+php katla.php "lang=en&max=100&guess=guest.+-.-"
 </pre>
