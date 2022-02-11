@@ -3,7 +3,7 @@
 //======================================================//
 //  Script  : katla.php 								//
 //	Author 	: Feb 9, 2022 								//
-// 	Update 	: Feb 9, 2022								//
+// 	Update 	: Feb 11, 2022								//
 //------------------------------------------------------//
 //  Script to help solving wordle puzzle 				//
 //======================================================//
@@ -15,7 +15,10 @@ $p = $argv[1];
 if (strlen($p)==0) {
 	print PHP_EOL."Usage : php ".$argv[0]." \"par1=value1&par2=value2...\"".PHP_EOL.
 		"par = g|guess|no|ok|max|lang".PHP_EOL.
-		"- g|guess = guesses split by comma (-+. for invalid/valid/wrong position)".PHP_EOL.
+		"- g|guess = guesses split by comma".PHP_EOL.
+		"   - / 0 : invalid char".PHP_EOL.
+		"   . / 1 : wrong position".PHP_EOL.
+		"   + / 2 : good position".PHP_EOL.
 		"- max  = maximum word displayed (default=20)".PHP_EOL.
 		"- lang = id|en (default=id, Indonesian)".PHP_EOL;
 	exit;
@@ -33,6 +36,7 @@ if (empty($K5)) {
 	exit;
 }
 $LEN = strlen($K5[0]);
+for ($j=1; $j<=$LEN; $j++) $POS[$j] = '0';
 
 if ($M = $PARS['g']) $PARS['guess'] = $M;
 if ($M = $PARS['guess']) {
@@ -43,16 +47,16 @@ if ($M = $PARS['guess']) {
 			$f = substr($w,$LEN+$i,1);
 			$c = substr($w,$i,1);
 			$j = $i+1;
-			if ($f==' ' || $f=='+') {
+			if ($f==' ' || $f=='+' || $f=='2') {
 				$POS[$j] = $c;
 				$ID[$c][$j] = 2;						// good-position
 				$NUM[$c]++;
 			}
-			else if ($f=='.') {
+			else if ($f=='.' || $f=='1') {
 				$NUM[$c]++;
 				$ID[$c][$j] = 1;						// wrong-position
 			}
-			else if ($f=='-') {
+			else if ($f=='-' || $f=='0') {
 				$ID[$c][$j] = 3;						// not-allowed
 				//$ID[$c][0] = 1;							// not-allowed-all
 			}
@@ -71,6 +75,8 @@ foreach ($ID as $c=>$ar) {
 	}
 }
 
+arsort($POS);
+
 if ($PARS['debug']==1) {
 	print_r($ID);
 	print_r($POS);
@@ -83,20 +89,21 @@ $num = 0;
 foreach ($K5 as $kata) {
 	$f = 0;
 	$NX = $NUM;
-	for ($i=0; $i<$LEN; $i++) {
+	foreach ($POS as $j=>$p) {
+	//for ($i=0; $i<$LEN; $i++) {
+		$i = $j-1;
 		$c = substr($kata,$i,1);
-		$j = $i+1;
 		$idc = $ID[$c];
-		$p = $POS[$j];
-		if (strlen($p)>0) {								// pos taken
-			if ($p!=$c) { $f = 0; break; }				// wrong char
-			if ($NX[$c]-->0) $f++;
+		//$p = $POS[$j];
+		if ($p>='a') {									// pos taken
+			if ($p==$c) { $NX[$c]--; $f++; }			// good char
+			else $f = -1;
 		}
-		else if (isset($idc)) {
-			if ($NUM[$c]<1 || 						// char is not allowed at all
-				$idc[$j]>0) { $f = 0; break; }			// char is not allowed here
-			if ($NX[$c]-->0) $f++;
-		}
+		else if (!isset($idc)) continue;				// allowed chars
+		else if ($NUM[$c]<1 || 							// char is not allowed at all
+			$idc[$j]>0) $f = -1;						// char is not allowed here
+		else if ($NX[$c]-->0) $f++;
+		if ($f<0) break;
 	}
 	if ($f>=$find) {
 		print "[$kata]";
