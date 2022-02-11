@@ -12,9 +12,9 @@ lang=en for english words, lang=id for indonesian/bahasa (default)<br>
 max is the maximum number of words displayed<br>
 guess is the guess and status from wordle<br>
 <pre>
-  - is for gray / invalid chars
-  . is for yellow / valid chars but wrong position
-  + is for green / valid chars and its position
+  -/0 is for gray / invalid chars
+  ./1 is for yellow / valid chars but wrong position
+  +/2 is for green / valid chars and its position
 </pre>
 
 guess is separated by comma<br>
