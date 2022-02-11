@@ -3,12 +3,13 @@ Provide words that match with wordle clue
 
 Paremeters in the script :
 <pre>
-  lang=en|id
+  lang=en|id|ind|idn
   max=100
   guess=super...+-
 </pre>
 
-lang=en for english words, lang=id for indonesian/bahasa (default)<br>
+lang=en for english words,<br>
+lang=id|ind|idn for indonesian/bahasa (default)<br>
 max is the maximum number of words displayed<br>
 guess is the guess and status from wordle<br>
 <pre>
